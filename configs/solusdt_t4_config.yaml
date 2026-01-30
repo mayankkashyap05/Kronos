@@ -1,6 +1,6 @@
 data:
   # Relative path to data (Assuming you run from folder)
-  data_path: "./data/solusdt_data/"
+  data_path: "./data/solusdt_data/1h.csv"
   lookback_window: 512
   predict_window: 48
   max_context: 512
