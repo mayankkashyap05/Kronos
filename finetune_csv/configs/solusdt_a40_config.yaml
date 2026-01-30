@@ -1,0 +1,68 @@
+data:
+  # Relative path to your data folder (from finetune_csv/)
+  data_path: "./data/solusdt_data/"
+  lookback_window: 512
+  predict_window: 48
+  max_context: 512
+  
+  # Crypto Volatility Clip (Keep high for SOL)
+  clip: 10.0 
+  
+  train_ratio: 0.9
+  val_ratio: 0.1
+  test_ratio: 0.0
+
+training:
+  # --- A40 OPTIMIZATIONS (48GB VRAM) ---
+  # Massive batch size for stable gradients and high speed
+  batch_size: 256
+  
+  # No accumulation needed because the A40 can handle the full batch
+  accumulation_steps: 1 
+  
+  # A40 servers usually have high CPU counts; use 16 to speed up data loading
+  num_workers: 16 
+  # -------------------------------------
+
+  # Epochs: slightly increased for "Best" results to ensure convergence
+  tokenizer_epochs: 20
+  basemodel_epochs: 50
+  
+  seed: 42
+  
+  # Learning Rates: Tuned for Stability
+  # Slightly conservative to prevent "forgetting" pre-trained knowledge
+  tokenizer_learning_rate: 0.0001 
+  predictor_learning_rate: 0.00002 
+  
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_weight_decay: 0.1
+
+model_paths:
+  # Relative paths to your pre-trained models
+  pretrained_tokenizer: "../models/kronos_tokenizer_base"
+  pretrained_predictor: "../models/kronos_base"
+  
+  exp_name: "SOLUSDT_MTF_A40"
+  
+  # Output folder relative to running script
+  base_path: "./finetuned/"
+  
+  # Auto-generated paths (leave empty)
+  base_save_path: "" 
+  finetuned_tokenizer: ""
+  tokenizer_save_name: "tokenizer"
+  basemodel_save_name: "basemodel"
+
+experiment:
+  name: "SOLUSDT_MTF_A40"
+  description: "A40 Optimized SOLUSDT Multi-Timeframe High-Performance"
+  use_comet: false
+  train_tokenizer: true
+  train_basemodel: true
+  skip_existing: false
+
+device:
+  use_cuda: true
+  device_id: 0
