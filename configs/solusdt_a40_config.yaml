@@ -41,8 +41,8 @@ training:
 
 model_paths:
   # Relative paths to your pre-trained models
-  pretrained_tokenizer: "../models/kronos_tokenizer_base"
-  pretrained_predictor: "../models/kronos_base"
+  pretrained_tokenizer: "../models/kronos_tokenizer_2k"
+  pretrained_predictor: "../models/kronos_mini"
   
   exp_name: "SOLUSDT_MTF_A40"
   
