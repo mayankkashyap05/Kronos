@@ -13,7 +13,7 @@ training:
   # --- T4 ADJUSTMENTS (16GB VRAM) ---
   batch_size: 32
   accumulation_steps: 8  # 32 * 8 = 256 effective batch size
-  num_workers: 4         # Reduced for T4 CPU limits
+  num_workers: 2        # Reduced for T4 CPU limits
   # ----------------------------------
 
   tokenizer_epochs: 15
