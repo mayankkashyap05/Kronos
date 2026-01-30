@@ -30,8 +30,8 @@ training:
 model_paths:
   # Relative paths pointing to the 'models' folder at the project root
   # based on your file list: models/kronos_tokenizer_base and models/kronos_base
-  pretrained_tokenizer: "./models/kronos_tokenizer_base"
-  pretrained_predictor: "./models/kronos_base"
+  pretrained_tokenizer: "./models/kronos_tokenizer_2k"
+  pretrained_predictor: "./models/kronos_mini"
   
   exp_name: "SOLUSDT_MTF_T4"
   
