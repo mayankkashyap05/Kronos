@@ -1,0 +1,57 @@
+data:
+  # Relative path to data (Assuming you run from folder)
+  data_path: "./data/solusdt_data/"
+  lookback_window: 512
+  predict_window: 48
+  max_context: 512
+  clip: 10.0 
+  train_ratio: 0.9
+  val_ratio: 0.1
+  test_ratio: 0.0
+
+training:
+  # --- T4 ADJUSTMENTS (16GB VRAM) ---
+  batch_size: 32
+  accumulation_steps: 8  # 32 * 8 = 256 effective batch size
+  num_workers: 4         # Reduced for T4 CPU limits
+  # ----------------------------------
+
+  tokenizer_epochs: 15
+  basemodel_epochs: 40
+  seed: 42
+  
+  tokenizer_learning_rate: 0.0002
+  predictor_learning_rate: 0.00002
+  
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_weight_decay: 0.1
+
+model_paths:
+  # Relative paths pointing to the 'models' folder at the project root
+  # based on your file list: models/kronos_tokenizer_base and models/kronos_base
+  pretrained_tokenizer: "./models/kronos_tokenizer_base"
+  pretrained_predictor: "./models/kronos_base"
+  
+  exp_name: "SOLUSDT_MTF_T4"
+  
+  # Output folder will be created inside finetune_csv/finetuned/
+  base_path: "./finetuned/"
+  
+  # These are auto-generated based on base_path + exp_name, leave empty
+  base_save_path: "" 
+  finetuned_tokenizer: ""
+  tokenizer_save_name: "tokenizer"
+  basemodel_save_name: "basemodel"
+
+experiment:
+  name: "SOLUSDT_MTF_T4"
+  description: "T4 Optimized SOLUSDT Multi-Timeframe"
+  use_comet: false
+  train_tokenizer: true
+  train_basemodel: true
+  skip_existing: false
+
+device:
+  use_cuda: true
+  device_id: 0
