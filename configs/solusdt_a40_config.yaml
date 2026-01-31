@@ -1,6 +1,6 @@
 data:
   # Relative path to your data folder (from finetune_csv/)
-  data_path: "./data/solusdt_data/"
+  data_path: "./data/solusdt_data/1h.csv"
   lookback_window: 512
   predict_window: 48
   max_context: 512
@@ -41,8 +41,8 @@ training:
 
 model_paths:
   # Relative paths to your pre-trained models
-  pretrained_tokenizer: "../models/kronos_tokenizer_2k"
-  pretrained_predictor: "../models/kronos_mini"
+  pretrained_tokenizer: "./models/kronos_tokenizer_2k"
+  pretrained_predictor: "./models/kronos_mini"
   
   exp_name: "SOLUSDT_MTF_A40"
   

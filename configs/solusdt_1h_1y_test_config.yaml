@@ -1,52 +1,56 @@
 data:
-  # Path to your 1h data (assuming standard naming convention)
+  # Path to your small 4k dataset
   data_path: "./data/solusdt_data/1h.csv"
   
-  # 1h Data Configuration
-  # Lookback: 336 hours = 14 Days (2 full weeks of context)
-  # Predict: 24 hours = 1 Full Day forecast
-  lookback_window: 336
+  # Adjusted Lookback for Small Data:
+  # We reduce lookback to 168 (7 Days). 
+  # Why? 336 consumes too much of your limited training data. 
+  # Dropping to 168 frees up ~170 more samples for training (significant when you only have ~3500).
+  lookback_window: 168 
   predict_window: 24
   max_context: 512
   
-  # 1H candles have slightly lower volatility than 15m outliers, 
-  # but we keep clip high for crypto.
   clip: 10.0 
   
-  # Standard split for limited data
+  # Standard split
   train_ratio: 0.9
   val_ratio: 0.1
   test_ratio: 0.0
 
 training:
-  # --- CRITICAL ADJUSTMENT FOR SMALL DATASET ---
-  # Dataset is only ~8,760 rows. 
-  # A Batch Size of 256 would result in only ~30 steps per epoch (too few).
-  # We reduce Batch Size to 64 to get ~120 steps per epoch for better convergence.
-  batch_size: 64
+  # --- CRITICAL ADJUSTMENT FOR TINY DATA (4000 Rows) ---
+  # Available training samples ~= 3,400.
+  # A Batch Size of 64 = Only 53 steps per epoch (Model learns too slowly).
+  # We reduce Batch Size to 32 to get ~106 steps per epoch.
+  batch_size: 32
   accumulation_steps: 1
-  num_workers: 4  # Reduced for smaller IO load
+  num_workers: 2 
 
-  # Epochs: Sufficient to converge on small data without memorizing noise
-  tokenizer_epochs: 20
-  basemodel_epochs: 40
+  # REDUCED EPOCHS to prevent memorization
+  # On tiny data, the model sees the same samples repeatedly very fast.
+  tokenizer_epochs: 10
+  basemodel_epochs: 30
   
   seed: 42
   
-  # Learning Rates: Standard fine-tuning range
+  # Learning Rates
   tokenizer_learning_rate: 0.0001 
   predictor_learning_rate: 0.00002 
   
   adam_beta1: 0.9
   adam_beta2: 0.98
-  adam_weight_decay: 0.05 # Reduced weight decay for smaller dataset
+  
+  # INCREASED REGULARIZATION
+  # We double the weight decay to 0.1 to punish the model for becoming too complex.
+  # This acts as a "brake" on overfitting.
+  adam_weight_decay: 0.1
 
 model_paths:
-  # Use Kronos-Small if you have it, otherwise Mini is acceptable for this data size
+  # Must use Mini or Small. Do not use Base.
   pretrained_tokenizer: "./models/kronos_tokenizer_2k"
   pretrained_predictor: "./models/kronos_mini" 
   
-  exp_name: "SOLUSDT_1H_1Y_TEST"
+  exp_name: "SOLUSDT_1H_4K_TEST"
   base_path: "./finetuned/"
   
   # Auto-generated paths (leave empty)
@@ -56,8 +60,8 @@ model_paths:
   basemodel_save_name: "basemodel"
 
 experiment:
-  name: "SOLUSDT_1H_TEST"
-  description: "Test run on 1 year of 1h data (14-day lookback)"
+  name: "SOLUSDT_1H_4K"
+  description: "Aggressive fine-tune on tiny 4k dataset"
   use_comet: false
   train_tokenizer: true
   train_basemodel: true
