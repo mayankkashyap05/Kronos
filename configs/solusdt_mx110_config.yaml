@@ -27,10 +27,13 @@ training:
   adam_beta2: 0.95
   adam_weight_decay: 0.05
 
+  # NEW SETTING: Choose 'best' (default) or 'all' (every epoch)
+  save_strategy: "all"
+
 model_paths:
   # Relative paths pointing to the 'models' folder at the project root
   # based on your file list: models/kronos_tokenizer_base and models/kronos_base
-  pretrained_tokenizer: "./models/kronos_tokenizer_base"
+  pretrained_tokenizer: "./models/kronos_tokenizer_2k"
   pretrained_predictor: "./models/kronos_mini"
   
   exp_name: "SOLUSDT_MTF_MX110"

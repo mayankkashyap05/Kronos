@@ -31,6 +31,11 @@ training:
   # gradient accumulation steps for tokenizer training
   accumulation_steps: 1
 
+  # NEW SETTING: Choose 'best' (default) or 'all' (every epoch)
+  save_strategy: "all"
+
+
+
 # model path configuration
 model_paths:
   # pretrained model path

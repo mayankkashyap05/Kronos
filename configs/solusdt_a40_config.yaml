@@ -1,6 +1,6 @@
 data:
   # Relative path to your data folder (from finetune_csv/)
-  data_path: "./data/solusdt_data/1h.csv"
+  data_path: "./data/solusdt_data/15m.csv"
   lookback_window: 512
   predict_window: 48
   max_context: 512
@@ -38,6 +38,9 @@ training:
   adam_beta1: 0.9
   adam_beta2: 0.95
   adam_weight_decay: 0.1
+
+  # NEW SETTING: Choose 'best' (default) or 'all' (every epoch)
+  save_strategy: "all"
 
 model_paths:
   # Relative paths to your pre-trained models

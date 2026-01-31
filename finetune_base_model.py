@@ -241,6 +241,7 @@ def train_model(model, tokenizer, device, config, save_dir, logger):
     use_ddp = dist.is_available() and dist.is_initialized()
     rank = dist.get_rank() if use_ddp else 0
     world_size = dist.get_world_size() if use_ddp else 1
+    save_strategy = getattr(config, 'save_strategy', 'best')
     
     train_loader, val_loader, train_dataset, val_dataset, train_sampler, val_sampler = create_dataloaders(config)
     optimizer = torch.optim.AdamW(
@@ -351,15 +352,38 @@ def train_model(model, tokenizer, device, config, save_dir, logger):
         if rank == 0:
             print(epoch_summary)
         
-        if avg_val_loss < best_val_loss:
+        # Logic 1: ALWAYS check for "Best" model to track metrics
+        is_best = avg_val_loss < best_val_loss
+        if is_best:
             best_val_loss = avg_val_loss
+            
+        # Logic 2: Decide what to save based on strategy
+        if save_strategy == 'all':
             if rank == 0:
-                model_save_path = os.path.join(save_dir, "best_model")
-                os.makedirs(model_save_path, exist_ok=True)
-                (model.module if use_ddp else model).save_pretrained(model_save_path)
-                save_msg = f"Best model saved to: {model_save_path} (validation loss: {best_val_loss:.4f})"
-                logger.info(save_msg)
-                print(save_msg)
+                # Option A: Save EVERY Epoch
+                epoch_save_path = os.path.join(save_dir, f"checkpoint-epoch-{epoch+1}")
+                os.makedirs(epoch_save_path, exist_ok=True)
+                (model.module if use_ddp else model).save_pretrained(epoch_save_path)
+                logger.info(f"Saved checkpoint to: {epoch_save_path}")
+                
+                # If this happened to be the best, update the 'best_model' folder too
+                if is_best:
+                    best_save_path = os.path.join(save_dir, "best_model")
+                    os.makedirs(best_save_path, exist_ok=True)
+                    (model.module if use_ddp else model).save_pretrained(best_save_path)
+                    logger.info(f"Updated best_model pointer (Loss: {best_val_loss:.4f})")
+
+        else: 
+            # Option B: Default "Best Only" behavior (Original Logic)
+            if is_best:
+                if rank == 0:
+                    model_save_path = os.path.join(save_dir, "best_model")
+                    os.makedirs(model_save_path, exist_ok=True)
+                    (model.module if use_ddp else model).save_pretrained(model_save_path)
+                    
+                    save_msg = f"Best model saved to: {model_save_path} (validation loss: {best_val_loss:.4f})"
+                    logger.info(save_msg)
+                    print(save_msg)
     
     return best_val_loss
 

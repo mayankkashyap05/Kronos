@@ -149,7 +149,8 @@ class CustomFinetuneConfig:
         self.adam_beta2 = training_config.get('adam_beta2', 0.95)
         self.adam_weight_decay = training_config.get('adam_weight_decay', 0.1)
         self.accumulation_steps = training_config.get('accumulation_steps', 1)
-        
+        self.save_strategy = training_config.get('save_strategy', 'best')
+
         model_paths = self.loader.get_model_paths()
         self.exp_name = model_paths.get('exp_name', 'default_experiment')
         self.pretrained_tokenizer_path = model_paths.get('pretrained_tokenizer')

@@ -28,8 +28,8 @@ training:
 
   # REDUCED EPOCHS to prevent memorization
   # On tiny data, the model sees the same samples repeatedly very fast.
-  tokenizer_epochs: 10
-  basemodel_epochs: 30
+  tokenizer_epochs: 5
+  basemodel_epochs: 5
   
   seed: 42
   
@@ -44,6 +44,9 @@ training:
   # We double the weight decay to 0.1 to punish the model for becoming too complex.
   # This acts as a "brake" on overfitting.
   adam_weight_decay: 0.1
+
+  # NEW SETTING: Choose 'best' (default) or 'all' (every epoch)
+  save_strategy: "all"
 
 model_paths:
   # Must use Mini or Small. Do not use Base.
