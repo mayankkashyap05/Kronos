@@ -43,8 +43,8 @@ training:
 
 model_paths:
   # Use Kronos-Small if you have it, otherwise Mini is acceptable for this data size
-  pretrained_tokenizer: "../models/kronos_tokenizer_2k"
-  pretrained_predictor: "../models/kronos_mini" 
+  pretrained_tokenizer: "./models/kronos_tokenizer_2k"
+  pretrained_predictor: "./models/kronos_mini" 
   
   exp_name: "SOLUSDT_1H_1Y_TEST"
   base_path: "./finetuned/"
